@@ -95,7 +95,7 @@ void lora_setup() {
     Serial.printf("LoRaWan OTAA - set retry times is incorrect! \r\n");
     return;
   }
-  if (!api.lorawan.cfm.set(1)) {
+  if (!api.lorawan.cfm.set(0)) {
     Serial.printf("LoRaWan OTAA - set confirm mode is incorrect! \r\n");
     return;
   }
@@ -129,9 +129,13 @@ void uplink_routine()
     Serial.printf("0x%02X ", collected_data[i]);
   }
   Serial.println("");
-
+  if (api.lorawan.njs.get() == 0) {
+    Serial.println("Not joined. Attempting to rejoin...");
+    api.lorawan.join(); // Thử Join lại không chặn
+    return; // Bỏ qua lần gửi này
+  }
   /** Send the data package */
-  if (api.lorawan.send(data_len, (uint8_t *) & collected_data, 5, true, 1)) {
+  if (api.lorawan.send(data_len, (uint8_t *) & collected_data, 5, false, 1)) {
     Serial.println("Sending is requested");
   } else {
     Serial.println("Sending failed");

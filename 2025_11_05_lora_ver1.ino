@@ -69,7 +69,7 @@ struct US {
 US value_US[4];
 void setup() {
   // put your setup code here, to run once:
-//  Serial.begin(9600);
+  //  Serial.begin(9600);
 #if DEBUG
   Serial.begin(9600);
 #endif
@@ -84,7 +84,7 @@ void loop() {
   if (TimeReached(time_10second)) {
     SetNextTimeInterval(time_10second, step_10s * 1000);
     RTU_Send_Request("modbus", 1, 3, 51, 8, 1);
-    uplink_routine();
+
 #if DEBUG
     for (int i = 0; i < 4; i++) {
       Serial.println("value_US[0].freq: " + String(value_US[0].freq));
@@ -92,16 +92,23 @@ void loop() {
     }
 #endif
   }
-//  static uint64_t last = 0;
-//  static uint64_t elapsed;
-//
-//  if ((elapsed = millis() - last) > OTAA_PERIOD) {
-//    uplink_routine();
-//
-//    last = millis();
-//  }
+  if (TimeReached(time_5minute)) {
+    SetNextTimeInterval(time_5minute, step_5m * 1000);
+    uplink_routine();
+#if DEBUG
+    Serial.println("5p");
+#endif
+  }
+  //  static uint64_t last = 0;
+  //  static uint64_t elapsed;
+  //
+  //  if ((elapsed = millis() - last) > OTAA_PERIOD) {
+  //    uplink_routine();
+  //
+  //    last = millis();
+  //  }
   //Serial.printf("Try sleep %ums..", OTAA_PERIOD);
-//  api.system.sleep.all(OTAA_PERIOD);
+  //  api.system.sleep.all(OTAA_PERIOD);
   //Serial.println("Wakeup..");
 
 }
